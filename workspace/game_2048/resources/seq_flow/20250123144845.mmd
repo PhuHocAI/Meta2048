@@ -1,0 +1,26 @@
+
+sequenceDiagram
+    participant M as Main
+    participant G as Game
+    participant S as ScoreManager
+    participant U as UI
+    participant Gr as Grid
+    M->>G: start_new_game(size)
+    G->>Gr: reset(size)
+    Gr-->>G: initialized grid
+    G->>S: load_high_score()
+    S-->>G: return high_score
+    G->>U: render(grid, score, high_score)
+    loop Game Loop
+        U->>U: capture_input()
+        U-->>G: return direction
+        G->>Gr: move_tiles(direction)
+        Gr-->>G: return can_move
+        G->>U: render(grid, score, high_score)
+        if new high score
+            G->>S: save_high_score(score)
+        end
+        if undo requested
+            G->>G: undo_last_move()
+        end
+    end
